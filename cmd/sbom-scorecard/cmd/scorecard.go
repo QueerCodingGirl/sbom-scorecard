@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"os"
 
-	"errors"
-
 	"strings"
 
 	"github.com/ebay/sbom-scorecard/pkg/cdx"
@@ -95,12 +93,12 @@ func validateFlags(args []string) (options, error) {
 	if flags.sbomType != "spdx" &&
 		flags.sbomType != "cdx" &&
 		flags.sbomType != "guess" {
-		return opts, errors.New(fmt.Sprintf("Unknown sbomType %s", flags.sbomType))
+		return opts, fmt.Errorf("Unknown sbomType %s", flags.sbomType)
 	}
 
 	opts.outputFormat = flags.outputFormat
 	if flags.outputFormat != "text" && flags.outputFormat != "json" {
-		return opts, errors.New(fmt.Sprintf("Unknown outputFormat %s", flags.outputFormat))
+		return opts, fmt.Errorf("Unknown outputFormat %s", flags.outputFormat)
 	}
 
 	if len(args) != 1 {

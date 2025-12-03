@@ -167,7 +167,7 @@ func GetCycloneDXReport(filename string) scorecard.SbomReport {
 		} else if reflect.DeepEqual(bom, sentinelBom) {
 			// If the bom was "decoded" but no fields made it over, it's not valid.
 			r.valid = false
-			r.docError = errors.New("SBOM decoded, but no fields were parsed.")
+			r.docError = errors.New("SBOM decoded, but no fields were parsed")
 		} else {
 			r.valid = true
 			r.docError = nil
@@ -179,8 +179,8 @@ func GetCycloneDXReport(filename string) scorecard.SbomReport {
 		return &r
 	}
 
-	if bom.Metadata != nil && bom.Metadata.Tools != nil {
-		for _, t := range *bom.Metadata.Tools {
+	if bom.Metadata != nil && bom.Metadata.Tools != nil && bom.Metadata.Tools.Tools != nil {
+		for _, t := range *bom.Metadata.Tools.Tools {
 			if t.Name != "" {
 				r.creationToolName += 1
 			}

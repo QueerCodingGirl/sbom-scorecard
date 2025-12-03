@@ -179,13 +179,41 @@ func GetCycloneDXReport(filename string) scorecard.SbomReport {
 		return &r
 	}
 
-	if bom.Metadata != nil && bom.Metadata.Tools != nil && bom.Metadata.Tools.Tools != nil {
-		for _, t := range *bom.Metadata.Tools.Tools {
-			if t.Name != "" {
-				r.creationToolName += 1
+	if bom.Metadata != nil {
+		if bom.Metadata.Tools != nil {
+			useDeprecatedTools := false
+			// If Components or Services are present, use them; otherwise, use legacy Tools
+			if bom.Metadata.Tools.Components != nil && len(*bom.Metadata.Tools.Components) > 0 && bom.Metadata.Tools.Services != nil && len(*bom.Metadata.Tools.Services) > 0 {
+				for _, c := range *bom.Metadata.Tools.Components {
+					if c.Name != "" {
+						r.creationToolName += 1
+					}
+					if c.Version != "" {
+						r.creationToolVersion += 1
+					}
+				}
+				
+				for _, s := range *bom.Metadata.Tools.Services {
+					if s.Name != "" {
+						r.creationToolName += 1
+					}
+					if s.Version != "" {
+						r.creationToolVersion += 1
+					}
+				}
+			} else {
+				useDeprecatedTools = true
 			}
-			if t.Version != "" {
-				r.creationToolVersion += 1
+
+			if useDeprecatedTools && bom.Metadata.Tools.Tools != nil {
+				for _, t := range *bom.Metadata.Tools.Tools {
+					if t.Name != "" {
+						r.creationToolName += 1
+					}
+					if t.Version != "" {
+						r.creationToolVersion += 1
+					}
+				}
 			}
 		}
 	}
